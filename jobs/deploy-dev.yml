@@ -1,0 +1,10 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
+code:
+  local_path: src
+command: >-
+  python deploy-dev.py
+environment: azureml:XGBoost-Env:1
+compute: azureml:aml-labs-01
+display_name: deploy-dev-model
+experiment_name: mlops-churn
+
