@@ -3,6 +3,7 @@ from sklearn.model_selection import train_test_split
 import xgboost as xgb
 from sklearn.metrics import roc_auc_score
 import numpy as np
+import seaborn as sns
 
 from azureml.core.run import Run
 
@@ -46,6 +47,15 @@ def train_model(X_train, y_train, X_test, y_test, params):
     model = xgb.train(params=params, dtrain=train, num_boost_round=1000,\
                        evals=[(test, "test")], early_stopping_rounds=50, verbose_eval=False)
     return model
+
+def generate_image(run, dataset):
+    plot = sns.distplot(dataset.IndiceSatisfacao, kde=False)
+    fig = plot.get_figure()
+    fig.savefig('outputs/dist-plot-satisfaction-index.jpg', bbox_inches='tight')
+
+    run.log_image(name='dist-plot-satisfaction-index', 
+                  path='outputs/dist-plot-satisfaction-index.jpg',                   
+                  description='Plot a histogram of the dependent variable IndiceSatisfacao')
 
 def persist_model(model):
     os.makedirs('outputs', exist_ok=True)
@@ -94,6 +104,9 @@ def main():
 
     # Preprocessing Features
     dataset, numeric_columns = preprocessing(dataset)
+
+    # Persist Distribution image
+    generate_image(run, dataset)
 
     # Split train and test
     train_dataset, test_dataset = split_dataset(dataset, seed)
