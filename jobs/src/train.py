@@ -125,7 +125,7 @@ def main():
 
     # Persist the model
     persist_model(model)
-    print('Model-V2')
+    print('Model-V3')
 
 if __name__ == '__main__':
     main()
